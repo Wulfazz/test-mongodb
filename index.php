@@ -1,4 +1,6 @@
 <?php
+
+// Connexion à la BDD mdb
 require_once __DIR__ . '/vendor/autoload.php';
 
 $client = new MongoDB\Client("mongodb://localhost:27017");
@@ -10,6 +12,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'Créer' && !empty($_POST['n
     $collection->insertOne(['name' => $_POST['nom']]);
 }
 
+// Modification
 if (isset($_POST['action']) && $_POST['action'] === 'Modifier' && !empty($_POST['id']) && !empty($_POST['nom'])) {
     $collection->updateOne(
         ['_id' => new \MongoDB\BSON\ObjectID($_POST['id'])],
@@ -41,6 +44,7 @@ $documents = $collection->find();
         <input type="submit" name="action" value="Créer">
     </form>
 
+    <!-- Formulaire pour entrer un nom -->
     <?php foreach ($documents as $document): ?>
         <div>
             <?php echo htmlspecialchars($document['name']); ?> - 
@@ -49,6 +53,7 @@ $documents = $collection->find();
         </div>
     <?php endforeach; ?>
 
+    <!-- Formulaire qui apparaît quand on appuie sur modifier -->
     <?php
         if (isset($_GET['modifier'])) {
             $document = $collection->findOne(['_id' => new \MongoDB\BSON\ObjectID($_GET['modifier'])]);
